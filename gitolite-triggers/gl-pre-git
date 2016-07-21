@@ -1,0 +1,32 @@
+#!/bin/bash -e
+# Args example: PRE_GIT opencv alalek R any git-upload-pack
+
+exec 1>&2
+cd ~/repositories/$2.git
+
+if [[ "$4" == "W" ]]; then
+  # Validate push access
+  if [[ `git config --bool push.disabled` == "true" ]]; then
+    echo "Push is not allowed"
+    exit 1
+  fi
+fi
+
+[ "$4" != "R" ] && exit 0
+
+if [[ `git config --bool remote.github.fetchmirror` == "true" ]]; then
+  echo "Check GitHub mirror..."
+  git fetch github --progress || echo "Check GitHub mirror failed. Ignore" && echo "Check GitHub mirror... DONE"
+fi
+
+if [[ `git config --bool remote.gitlab.fetchmirror` == "true" ]]; then
+  echo "Check upstream mirror..."
+  git fetch gitlab --progress || echo "Check upstream mirror failed. Ignore" && echo "Check upstream mirror... DONE"
+fi
+
+if [[ `git config --bool remote.origin.fetchmirror` == "true" ]]; then
+  echo "Check origin mirror..."
+  git fetch origin --progress || echo "Check origin mirror failed. Ignore" && echo "Check origin mirror... DONE"
+fi
+
+exit 0

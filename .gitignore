@@ -1,0 +1,5 @@
+.create.sh*
+ssh-etc
+ssh-git
+repositories
+gitolite-logs
